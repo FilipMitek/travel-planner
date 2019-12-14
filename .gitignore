@@ -1,2 +1,6 @@
-!src/*
 lib
+node_modules/
+yarn-error.log
+/.idea
+package-lock.json
+.gitignore

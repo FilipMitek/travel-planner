@@ -3,45 +3,35 @@ import * as express from 'express';
 import { Server } from 'http';
 import * as bodyParser from 'body-parser';
 import { AbstractListener } from './Listeners/AbstractListener';
+import { RoutesLoader } from './Routes/RoutesLoader';
 
 export class ApiServer {
+
+    private readonly expressApp: express.Express;
     private logger: ILogger;
     private listener: AbstractListener;
+    private routesLoader: RoutesLoader;
 
-    constructor(logger: ILogger, listener: AbstractListener) {
+    constructor(logger: ILogger, listener: AbstractListener, routesLoader) {
         this.logger = logger;
         this.listener = listener;
+        this.routesLoader = routesLoader;
+        this.expressApp = express();
     }
 
-    public init(): Server {
-        return this.listener.createServer(this.initExpress());
+    public async init(): Promise<Server> {
+        this.initExpress();
+        await this.initRoutes();
+        return this.listener.createServer(this.expressApp);
     }
 
-    private initExpress(): express.Express {
+    private initExpress(): void {
         this.logger.info(this, 'initExpress', 'Express was initialized;');
-        const expressApp = express();
-        expressApp.use(bodyParser.urlencoded({ extended: false }));
-        expressApp.use(bodyParser.json());
-        const routerTest = express.Router();
-        routerTest.get('/prices', this.bodzioMiddleware());
-        expressApp.use('/fuel', routerTest);
-        expressApp.get('/showMain', this.testMiddleware());
-        return expressApp;
+        this.expressApp.use(bodyParser.urlencoded({ extended: false }));
     }
 
-    private testMiddleware() {
-        return(req: express.Request, res: express.Response) => {
-            res.send(JSON.stringify({
-                PierwszyObiekt: 'Test',
-                PierwszaNazwa: 'Test1',
-            }));
-            this.logger.info(this, 'initExpress', 'Zainicijalizowano sciezke /elo');
-        };
+    private async initRoutes(): Promise<void> {
+        await this.routesLoader.load(this.expressApp);
     }
-    private bodzioMiddleware() {
-        return(req: express.Request, res: express.Response) => {
-            res.send('Paliwku to jest 2zł/l');
-            this.logger.info(this, 'initExpress', 'Bodzio rusyzł');
-        };
-    }
+
 }
