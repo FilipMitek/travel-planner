@@ -3,4 +3,4 @@ node_modules/
 yarn-error.log
 /.idea
 package-lock.json
-.gitignore
+/travel-planner-config.yml

@@ -2,13 +2,11 @@ import { inject, injectable } from 'inversify';
 import { TYPES } from '../Types';
 import { ILogger } from '../Logger/ILogger';
 import { Request, Response, NextFunction } from 'express';
-import { IParser } from '../Parser/IParser';
 
 @injectable()
 export class AuthMiddleware {
 
     private logger: ILogger;
-    private parser: IParser;
 
     constructor(
         @inject(TYPES.Logger) logger: ILogger,
