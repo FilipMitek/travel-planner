@@ -31,6 +31,6 @@
     "webpack-node-externals": "^1.7.2",
     "xml2js": "^0.4.22",
     "yaml": "^1.7.2",
-    "yarn": "^1.21.1"
+    "yarn": "^1.22.0"
   }
 }
